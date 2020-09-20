@@ -34,19 +34,11 @@ func WatchDocuments() {
 		log.Fatalln(err)
 	}
 
-	// Print a list of all of the files and folders currently
-	// being watched and their paths.
-	for path, f := range w.WatchedFiles() {
-		fmt.Printf("%s: %s\n", path, f.Name())
-	}
-
-	fmt.Println()
-
-	// Trigger 2 events after watcher started.
-	go func() {
-		w.Wait()
-		w.TriggerEvent(watcher.Write, nil)
-	}()
+	// // Print a list of all of the files and folders currently
+	// // being watched and their paths.
+	// for path, f := range w.WatchedFiles() {
+	// 	fmt.Printf("%s: %s\n", path, f.Name())
+	// }
 
 	// Start the watching process - it'll check for changes every 100ms.
 	if err := w.Start(time.Millisecond * 100); err != nil {

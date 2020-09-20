@@ -59,6 +59,9 @@ func main() {
         Aliases: []string{"w"},
         Usage:   "watch your app",
         Action:  func(c *cli.Context) error {
+          go func() {
+            app_server.ServeApp()
+          }()
           app_watcher.WatchDocuments()
           return nil
         },
