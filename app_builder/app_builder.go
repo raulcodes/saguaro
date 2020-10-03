@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
+
+	"golang.org/x/net/html"
 )
 
 func BuildApp() error {
@@ -27,14 +30,36 @@ func BuildApp() error {
 	// 	fmt.Println(file)
 	// }
 
-	headData, _ := ioutil.ReadFile("document/head.html")
-	index.Write(headData)
-
-	bodyData, _ := ioutil.ReadFile("document/body.html")
-	index.Write(bodyData)
-
-	// fmt.Print(validateHTML([]byte("<hello")))
+	buildAndWriteComponent("document/head.html", index)
+	buildAndWriteComponent("document/body.html", index)
 
 	fmt.Println("App built successfully.")
+	return nil
+}
+
+func buildAndWriteComponent(componentPath string, destination *os.File) error {
+	data, err := ioutil.ReadFile(componentPath)
+	if err != nil {
+		return fmt.Errorf("Error building component at %s", componentPath)
+	}
+
+	err = validateHTML(data)
+	if err != nil {
+		return err
+	}
+
+	destination.Write(data)
+
+	return nil
+}
+
+func validateHTML(htmlData []byte) error {
+	htmlDataReader := strings.NewReader(string(htmlData))
+
+	_, err := html.Parse(htmlDataReader)
+	if err != nil {
+		return fmt.Errorf("Error parsing HTML")
+	}
+
 	return nil
 }
